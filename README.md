@@ -105,3 +105,35 @@ prompts, channelPublicIds,serviceTerms 등에 어떤 정보를 넣어야 하는�
 LSApplicationQueriesSchemes에도 kakaokompassauth,kakaolink 을 추가해야 합니다.
 
 이 방법까지 해준다면 카카오톡에서 성공적으로 로그인에 쓰이는 AccessToken이나 프로필 등의 정보를 받아 올 수 있습니다.
+
+## 2. Facebook
+페이스북 역시 cocoapods로 SDK를 추가했습니다.
+```sh
+pod 'FBSDKLoginKit'
+```
+
+```sh
+ if let token = AccessToken.current, !token.isExpired {
+            //이미 로그인된 상태
+        }
+        else {
+            let loginManager = LoginManager()
+            loginManager.logIn(permissions: ["public_profile"], from: vc) { result, error in
+                if let error = error {
+                    print("Encounter Error - \(error)")
+                }
+                else if let result = result, result.isCancelled {
+                    print("Canceled")
+                }
+                else {
+                    if let tokenString = result?.token?.tokenString {
+                        self.loginFluv(vc)
+                    }
+                    
+                    //페이스북 로그아웃
+                    loginManager.logOut()
+                }
+            }
+        }
+```
+
